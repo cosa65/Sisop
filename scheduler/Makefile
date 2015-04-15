@@ -34,4 +34,4 @@ new: clean all
 
 debug:	CXXFLAGS += -g
 debug: $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) -o simusched $^ $(LDFLAGS)
