@@ -7,7 +7,7 @@
 
 using namespace std;
 
-SchedRR::SchedRR(vector<int> argn): quantum(++argn.begin(), argn.end()), quantum_status(argn[0], 0) {
+SchedRR::SchedRR(vector<int> argn): quantum(++(++argn.begin()), argn.end()), quantum_status(argn[0], 0) {
 	// Round robin recibe la cantidad de cores y sus cpu_quantum por parámetro
 	cout << "tiene tamanio " << quantum.size() << endl;
 }
@@ -28,12 +28,17 @@ void SchedRR::unblock(int pid) {
 int SchedRR::tick(int cpu, const enum Motivo m) {
 	if ((m == EXIT) || (m == BLOCK)) {		
 	// Si el pid actual terminó, sigue el próximo.
-		if (q.empty()) return IDLE_TASK;
-		else {
+		quantum_status[cpu] = 0;
+		if (q.empty()) {
+			return IDLE_TASK;
+		} else {
 			int sig = q.front(); q.pop();
 			return sig;
 		}
 	} else {
+		/*if(current_pid(cpu) == 1) {
+			cout << endl << endl << "Soy task uno , quantum_status:" << quantum_status[cpu] << endl << endl;
+		}*/
 		quantum_status[cpu]++;
 		if (current_pid(cpu) == IDLE_TASK && !q.empty()) {
 			int sig = q.front(); q.pop();
@@ -46,7 +51,7 @@ int SchedRR::tick(int cpu, const enum Motivo m) {
 			return sig;
 		} else {
 			return current_pid(cpu);
-		}
+			}
 	}
 }
 
