@@ -1,6 +1,6 @@
-export LC_ALL=C
-CXXFLAGS= -Wall -pedantic -g -ggdb
+export LC_ALL=
 LDFLAGS= -lpthread
+#CXXFLAGS= -g
 
 OBJS=main.o simu.o basetask.o tasks.o sched_fcfs.o sched_sjf.o sched_rr2.o sched_rr.o sched_fixed.o sched_dynamic.o
 MAIN=simusched
@@ -31,3 +31,7 @@ clean:
 
 .PHONY: new
 new: clean all
+
+debug:	CXXFLAGS += -g
+debug: $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
