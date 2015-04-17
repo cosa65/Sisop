@@ -17,7 +17,12 @@ class SchedFixed : public SchedBase {
 		virtual int tick(int cpu, const enum Motivo m);
 
 	private:
-		std::queue<int> q;
+//		std::queue<int> q;
+		std::priority_queue< 
+				pair<int, int> ,
+			 deque< pair<int, int> >,
+			greater< pair<int, int> > > q;
+		
 };
 
 #endif
