@@ -17,7 +17,12 @@ class SchedDynamic : public SchedBase {
 		virtual int tick(int cpu, const enum Motivo m);
 
 	private:
-		std::queue<int> q;
+		struct task {
+			int pid, deadline;
+			bool operator<(const task &t2) const {return deadline > t2.deadline;}
+		};
+		std::priority_queue<task> q;
+		int ciclo; // numero de ciclo actual
 };
 
 #endif
