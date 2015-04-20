@@ -1,6 +1,7 @@
 #include "tasks.h"
 #include <stdlib.h>
 #include <iostream>
+#include <algorithm>
 using namespace std;
 
 void TaskCPU(int pid, vector<int> params) { // params: n
@@ -52,12 +53,12 @@ void TaskBatch(int pid, vector<int> params) {
     for (int i = 0; i < cant_bloq; ++i){
         bloq_moment[i] = rand() % cpu_time;
     }
-    sort(bloq_moment.begin(), bloq_moment.end());
+    std::sort(bloq_moment.begin(), bloq_moment.end());
     int cpu_usado = 0;
     for (int i = 0; i< cant_bloq; ++i){
         uso_CPU(pid, bloq_moment[i] - cpu_usado);
         uso_IO(pid, 1);
-        cpu_usado += bloq_moment[i] - cpu_usado + 1
+        cpu_usado += bloq_moment[i] - cpu_usado + 1;
     }
 
 
