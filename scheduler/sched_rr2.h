@@ -16,6 +16,11 @@ class SchedRR2 : public SchedBase {
 
 	private:
 		int next(int cpu);
+		std::vector<int> quantum;
+		std::vector<int> quantum_status;
+		std::vector<std::queue<int> > qs;
+		std::map<int, int> proc_cpu; // cada proceso, guarda su cpu
+
 };
 
 #endif

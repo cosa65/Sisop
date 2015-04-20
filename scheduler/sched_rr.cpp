@@ -9,7 +9,7 @@ using namespace std;
 
 SchedRR::SchedRR(vector<int> argn): quantum(++(++argn.begin()), argn.end()), quantum_status(argn[0], 0) {
 	// Round robin recibe la cantidad de cores y sus cpu_quantum por parámetro
-	cout << "tiene tamanio " << quantum.size() << endl;
+	//cout << "tiene tamanio " << quantum.size() << endl;
 }
 
 SchedRR::~SchedRR() {
