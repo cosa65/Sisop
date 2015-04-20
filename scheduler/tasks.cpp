@@ -45,6 +45,23 @@ void TaskConsola(int pid, vector<int> params) {
 	}
 }
 
+void TaskBatch(int pid, vector<int> params) {
+    int cpu_time = params[0];
+    int cant_bloq = params[1];
+    vector<int> bloq_moment(cant_bloq);
+    for (int i = 0; i < cant_bloq; ++i){
+        bloq_moment[i] = rand() % cpu_time;
+    }
+    sort(bloq_moment.begin(), bloq_moment.end());
+    int cpu_usado = 0;
+    for (int i = 0; i< cant_bloq; ++i){
+        uso_CPU(pid, bloq_moment[i] - cpu_usado);
+        uso_IO(pid, 1);
+        cpu_usado += bloq_moment[i] - cpu_usado + 1
+    }
+
+
+}
 void tasks_init(void) {
 	/* Todos los tipos de tareas se deben registrar acá para poder ser usadas.
 	 * El segundo parámetro indica la cantidad de parámetros que recibe la tarea
