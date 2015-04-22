@@ -60,7 +60,7 @@ void TaskBatch(int pid, vector<int> params) {
         uso_IO(pid, 1);
         cpu_usado += bloq_moment[i] - cpu_usado + 1;
     }
-
+    uso_CPU(pid, cpu_time - cpu_usado);
 
 }
 void tasks_init(void) {
@@ -71,5 +71,6 @@ void tasks_init(void) {
 	register_task(TaskIO, 2);
 	register_task(TaskAlterno, -1);
 	register_task(TaskConBloqueo, 3);
-	register_task(TaskConsola, 3)
+	register_task(TaskConsola, 3);
+    register_task(TaskBatch, 2);
 }
