@@ -56,11 +56,11 @@ void TaskBatch(int pid, vector<int> params) {
     std::sort(bloq_moment.begin(), bloq_moment.end());
     int cpu_usado = 0;
     for (int i = 0; i< cant_bloq; ++i){
-        uso_CPU(pid, bloq_moment[i] - cpu_usado);
+        if (bloq_moment[i] - cpu_usado - 1 > 0)uso_CPU(pid, bloq_moment[i] - cpu_usado - 1);
         uso_IO(pid, 1);
-        cpu_usado = bloq_moment[i] + i ;
+        cpu_usado = bloq_moment[i] + i;
     }
-    uso_CPU(pid, cpu_time - cpu_usado);
+    uso_CPU(pid, cpu_time - cpu_usado - 1);
 
 }
 void tasks_init(void) {
