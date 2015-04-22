@@ -3,7 +3,7 @@
 
 using namespace std;
 
-SchedFixed::SchedFixed(vector<int> argn) {
+SchedFixed::SchedFixed(vector<int> argn): periods(argn[0],0) {
 }
 
 SchedFixed::~SchedFixed() {
@@ -23,19 +23,36 @@ void SchedFixed::unblock(int pid) {
 int SchedFixed::tick(int cpu, const enum Motivo m) {
 
 	if(m==EXIT){
-		if(q.empty()) return IDLE_TASK;
+		if(q.empty()){
+		 periods[cpu]=0;
+		 return IDLE_TASK;
+		}
 		else {
+			periods[cpu] = q.top().first;
 			int sig = q.top().second; q.pop();
 			return sig;
 		}	
-	} else {
-		// Siempre sigue el pid actual mientras no termine.
-		if (current_pid(cpu) == IDLE_TASK && !q.empty()) {
-			int sig = q.top().second; q.pop();
-			return sig;
-		} else {
-			return current_pid(cpu);
-		}
+	} else { //La actual se quiere seguir ejecutando / bloqueando
+
+			if(!q.empty()){
+
+				if (current_pid(cpu) == IDLE_TASK) {
+					periods[cpu] = q.top().first;
+					int sig = q.top().second; q.pop();
+					return sig;
+				}
+				//Si hay esperando una con mas prioridad que la actual
+				if(current_pid(cpu)!= IDLE_TASK && periods[cpu] > q.top().first ){
+					pair<int,int> pushear = make_pair(periods[cpu], current_pid(cpu));
+					periods[cpu] = q.top().first;
+					int sig = q.top().second; q.pop();
+					q.push(pushear);
+					return sig;
+				}
+			
+			}
+		return current_pid(cpu);
+		
 	}
 
 }

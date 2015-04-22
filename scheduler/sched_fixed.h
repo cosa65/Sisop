@@ -18,6 +18,7 @@ class SchedFixed : public SchedBase {
 
 	private:
 //		std::queue<int> q;
+		std::vector<unsigned int> periods;
 		std::priority_queue< 
 				pair<int, int> ,
 			 deque< pair<int, int> >,
