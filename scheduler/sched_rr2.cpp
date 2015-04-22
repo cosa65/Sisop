@@ -6,7 +6,7 @@
 
 using namespace std;
 
-SchedRR2::SchedRR2(vector<int> argn): quantum(++(++argn.begin()), argn.end()), quantum_status(argn[0], 0) {
+SchedRR2::SchedRR2(vector<int> argn): quantum(++(++argn.begin()), argn.end()), quantum_status(argn[0], 0), qs(argn[0]) {
 	// Round robin recibe la cantidad de cores y sus cpu_quantum por parámetro
 }
 

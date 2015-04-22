@@ -3,7 +3,7 @@
 
 using namespace std;
 
-SchedDynamic::SchedDynamic(vector<int> argn): ciclo(0) {
+SchedDynamic::SchedDynamic(vector<int> argn): ciclo(0), deadlines() {
 }
 
 SchedDynamic::~SchedDynamic() {
@@ -24,16 +24,22 @@ void SchedDynamic::unblock(int pid) {
 
 int SchedDynamic::tick(int cpu, const enum Motivo m) {
 	ciclo++;
-	if ((m == EXIT) || (m == BLOCK)) {
+	if ((m == EXIT) || (m == BLOCK) || current_pid(cpu) == IDLE_TASK) {
 		if (q.empty()) return IDLE_TASK;
-		task t = q.top();
+		int pid = q.top().pid;
+		deadlines[cpu] = q.top().deadline;
 		q.pop();
-		return t.pid;
+		return pid;
 	}
-	if (current_pid(cpu) == IDLE_TASK && !q.empty()) {
-		task t = q.top();
+	// hay una tarea con mayor prioridad?
+	auto it = deadlines.find(cpu);
+	if (it != deadlines.end() && it->second > q.top().deadline) {
+		task t({current_pid(cpu), it->second});
+		int pid = q.top().pid;
+		deadlines[cpu] = q.top().deadline;
 		q.pop();
-		return t.pid;
+		q.push(t);
+		return pid;
 	}
 	return current_pid(cpu);
 }
