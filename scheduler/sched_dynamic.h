@@ -4,7 +4,6 @@
 #include <vector>
 #include <queue>
 #include "basesched.h"
-#include <map>
 
 using namespace std;
 
@@ -24,7 +23,7 @@ class SchedDynamic : public SchedBase {
 		};
 		std::priority_queue<task> q;
 		int ciclo; // numero de ciclo actual
-		std::map<int,int> deadlines; // deadlines de las tareas que se estan ejecutando en cada cpu
+		std::vector<int> deadlines; // deadlines de las tareas que se estan ejecutando en cada cpu
 };
 
 #endif
