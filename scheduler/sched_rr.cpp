@@ -32,8 +32,10 @@ int SchedRR::tick(int cpu, const enum Motivo m) {
 		if (q.empty()) {
 			return IDLE_TASK;
 		} else {
+
 			int sig = q.front(); q.pop();
-			return sig;
+         
+            return sig;
 		}
 	} else {
 		/*if(current_pid(cpu) == 1) {
