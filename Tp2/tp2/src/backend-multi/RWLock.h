@@ -11,7 +11,13 @@ class RWLock {
         void wunlock();
 
     private:
-        pthread_rwlock_t rwlock;
+        //pthread_rwlock_t rwlock;
+        pthread_cond_t cond;
+       // pthread_cond_t read;
+        pthread_mutex_t mut;
+        pthread_mutex_t mutreading;
+        pthread_mutex_t hayWrites;
+        int reading;
 };
 
 #endif
