@@ -23,6 +23,7 @@ void RWLock :: rlock() {
 		pthread_cond_broadcast(&cond);
 	} else {						//Si no soy el primero, espero a que el primero entre y me avise que puedo entrar
 		pthread_cond_wait(&cond, &mutreading);
+		pthread_mutex_unlock(&mutreading);
 	}
 
 }
