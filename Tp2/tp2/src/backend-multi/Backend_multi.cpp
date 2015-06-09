@@ -86,8 +86,9 @@ int main(int argc, const char* argv[]) {
     // aceptar conexiones entrantes.
     socket_size = sizeof(remoto);
     while (true) {
-        if ((socketfd_cliente = accept(socket_servidor, (struct sockaddr*) &remoto, (socklen_t*) &socket_size)) == -1)
+        if ((socketfd_cliente = accept(socket_servidor, (struct sockaddr*) &remoto, (socklen_t*) &socket_size)) == -1){
             cerr << "Error al aceptar conexion" << endl;
+        }
         else {
             sockets.push_back(socketfd_cliente);
             //close(socket_servidor);
@@ -96,6 +97,7 @@ int main(int argc, const char* argv[]) {
             clientes.push_back(cliente);
             if (pthread_create(&(clientes[clientes.size()-1]), NULL, &atendedor_de_jugador, (void *)(&sockets[sockets.size()-1])) != 0) {
                 cerr << "Error creando el thread" << endl;
+            }
         }
     }
 

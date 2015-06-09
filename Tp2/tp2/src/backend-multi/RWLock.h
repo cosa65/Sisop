@@ -18,6 +18,7 @@ class RWLock {
         pthread_mutex_t mutreading;
         pthread_mutex_t hayWrites;
         int reading;
+        int waiting;
 };
 
 #endif

@@ -6,6 +6,7 @@ RWLock :: RWLock()/* : rwlock()*/{
 	pthread_cond_init(&cond, NULL);
 	pthread_mutex_init(&hayWrites, NULL);
 	reading = 0;
+	waiting = 0;
 
 
 }
@@ -17,13 +18,23 @@ void RWLock :: rlock() {
 
 	pthread_mutex_lock(&mutreading);
 	reading++;
+	waiting++;
 	if(reading == 1){				//Si soy el primero, espero a que se acabo el write y luego dejo entrar a todos los reads
 		pthread_mutex_unlock(&mutreading);
 		pthread_mutex_lock(&mut);
-		pthread_cond_broadcast(&cond);
-	} else {						//Si no soy el primero, espero a que el primero entre y me avise que puedo entrar
-		pthread_cond_wait(&cond, &mutreading);
+		pthread_mutex_lock(&mutreading);
+		waiting--;
 		pthread_mutex_unlock(&mutreading);
+		pthread_cond_broadcast(&cond);
+	} else {						//Si no soy el primero, espero a que el primero entre y me avise que puedo entrar, o paso si ya puedo pasar
+		if(waiting == 1){			//Si soy el primero esperando, pero no soy el primero, significa que puedo pasar
+			waiting--;
+			pthread_mutex_unlock(&mutreading);
+		} else {					// Si hay otros esperando y no soy el primero, significa que el primero no paso
+			pthread_cond_wait(&cond, &mutreading);
+			waiting--;
+			pthread_mutex_unlock(&mutreading);
+		}
 	}
 
 }
