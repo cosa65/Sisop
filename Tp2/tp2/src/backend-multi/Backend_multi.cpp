@@ -94,7 +94,8 @@ int main(int argc, const char* argv[]) {
             //creamos un thread que atiende jugador
             pthread_t cliente;
             clientes.push_back(cliente);
-            pthread_create(&(clientes[clientes.size()-1]), NULL, &atendedor_de_jugador, (void *)(&sockets[sockets.size()-1]));
+            if (pthread_create(&(clientes[clientes.size()-1]), NULL, &atendedor_de_jugador, (void *)(&sockets[sockets.size()-1])) != 0) {
+                cerr << "Error creando el thread" << endl;
         }
     }
 
