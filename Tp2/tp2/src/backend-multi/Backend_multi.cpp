@@ -109,7 +109,6 @@ int main(int argc, const char* argv[]) {
 void *atendedor_de_jugador(void *socketvoid) {
     // variables locales del jugador
     int socket_fd = *(int *)socketvoid;
-
     char nombre_jugador[21];
     list<Casillero> palabra_actual; // lista de letras de la palabra aún no confirmada
 
@@ -313,7 +312,7 @@ void terminar_servidor_de_jugador(int socket_fd, list<Casillero>& palabra_actual
 
     quitar_letras(palabra_actual);
 
-    exit(-1);
+    pthread_exit(NULL);
 }
 
 
