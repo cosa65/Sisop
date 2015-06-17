@@ -12,13 +12,13 @@ class RWLock {
 
     private:
         //pthread_rwlock_t rwlock;
-        pthread_cond_t cond;
        // pthread_cond_t read;
-        pthread_mutex_t mut;
+        pthread_cond_t cond;
+        pthread_mutex_t mutwriting;
         pthread_mutex_t mutreading;
         pthread_mutex_t hayWrites;
         int reading;
-        int waiting;
+        int writing;
 };
 
 #endif

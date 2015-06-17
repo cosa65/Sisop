@@ -1,17 +1,72 @@
 #include "RWLock.h"
 
 RWLock :: RWLock()/* : rwlock()*/{
-	pthread_mutex_init(&mut, NULL);
 	pthread_mutex_init(&mutreading, NULL);
-	pthread_cond_init(&cond, NULL);
-	pthread_mutex_init(&hayWrites, NULL);
+	pthread_mutex_init(&mutwriting, NULL);
+	pthread_cond_init(&cond, NULL);	
+	pthread_mutex_init(&hayWrites, NULL);				//Evite inanicion y controla interaccion entre writes (lo toma un write y todos se encolan detras de el)
+	writing = 0;
 	reading = 0;
-	waiting = 0;
-
 
 }
 
 void RWLock :: rlock() {	
+
+	pthread_mutex_lock(&hayWrites);
+	pthread_mutex_unlock(&hayWrites);
+
+	pthread_mutex_lock(&mutwriting);
+	
+	while(writing != 0){		
+		pthread_cond_wait(&cond, &mutwriting);
+	}
+	pthread_mutex_unlock(&mutwriting);
+
+	pthread_mutex_lock(&mutreading);
+	reading++;
+	pthread_mutex_unlock(&mutreading);
+
+}
+
+void RWLock :: wlock() {
+
+	pthread_mutex_lock(&hayWrites);	
+
+	pthread_mutex_lock(&mutreading);
+	
+	while(reading > 0){
+		pthread_cond_wait(&cond, &mutreading);
+	}
+
+	pthread_mutex_lock(&mutwriting);
+	writing++;
+	pthread_mutex_unlock(&mutwriting);
+
+}
+
+void RWLock :: runlock() {
+
+	pthread_mutex_lock(&mutreading);
+	reading--;
+	pthread_mutex_unlock(&mutreading);
+	
+	pthread_cond_signal(&cond);
+
+}
+
+void RWLock :: wunlock() {
+
+	pthread_mutex_unlock(&hayWrites);
+
+	pthread_mutex_lock(&mutwriting);
+	writing--;	
+	pthread_mutex_unlock(&mutwriting);
+	
+	pthread_cond_broadcast(&cond);
+
+} 
+
+/*void RWLock :: rlock() {	
 
 	pthread_mutex_lock(&hayWrites);
 	pthread_mutex_unlock(&hayWrites);
@@ -21,7 +76,7 @@ void RWLock :: rlock() {
 	waiting++;
 	if(reading == 1){				//Si soy el primero, espero a que se acabo el write y luego dejo entrar a todos los reads
 		pthread_mutex_unlock(&mutreading);
-		pthread_mutex_lock(&mut);
+		pthread_mutex_lock(&mutreading);
 		pthread_mutex_lock(&mutreading);
 		waiting--;
 		pthread_mutex_unlock(&mutreading);
@@ -30,34 +85,28 @@ void RWLock :: rlock() {
 		if(waiting == 1){			//Si soy el primero esperando, pero no soy el primero, significa que puedo pasar
 			waiting--;
 			pthread_mutex_unlock(&mutreading);
-		} else {					// Si hay otros esperando y no soy el primero, significa que el primero no paso
+		} else {
+					// Si hay otros esperando y no soy el primero, significa que el primero no paso
+			while(writing == 0){
 			pthread_cond_wait(&cond, &mutreading);
+			}
 			waiting--;
 			pthread_mutex_unlock(&mutreading);
 		}
 	}
 
 }
+*/
 
-void RWLock :: wlock() {
-
-	pthread_mutex_lock(&hayWrites);
-	pthread_mutex_lock(&mut);
-
-}
-
+/* 
 void RWLock :: runlock() {
 
 	pthread_mutex_lock(&mutreading);
 	reading--;
 	if(reading == 0){				//Si soy el ultimo, dejo que pasen los writes
-		pthread_mutex_unlock(&mut);
+		pthread_mutex_unlock(&mutreading);
 	}
 	pthread_mutex_unlock(&mutreading);
 }
 
-void RWLock :: wunlock() {
-	pthread_mutex_unlock(&hayWrites);
-	pthread_mutex_unlock(&mut);
-
-}
+*/
