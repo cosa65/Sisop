@@ -15,6 +15,7 @@ class RWLock {
         pthread_cond_t cond;
        // pthread_cond_t read;
         pthread_mutex_t mut;
+        // pthread_mutex_t mutreading;
         pthread_mutex_t hayWrites;
         int reading;
         int writing;
