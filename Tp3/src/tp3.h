@@ -21,6 +21,9 @@
 #define TAG_OTORGADO          30    /* srv -> cli */
 #define TAG_LIBERO            40    /* cli -> srv */
 #define TAG_TERMINE           50    /* cli -> srv */
+#define TAG_ME_REQ			  60 	/* srv -> srv */
+#define TAG_ME_REP			  70 	/* srv -> srv */
+#define TAG_SRV_EXIT		  80 	/* srv -> srv */
 
 /* Abreviaciones de constantes MPI que usaremos seguido */
 
@@ -39,6 +42,13 @@
 #define CHAR_INICIAL                'a'
 #define MSEG_MIN_TRAS_NEWLINE       10
 #define INSTR_POR_SECCION_CRITICA   40
+
+/* estado del servidor */
+
+#define STAT_SE_FUE -1
+#define STAT_NORMAL 0
+#define STAT_WAITING 1
+
 
 /* Parámetros que definen el comportamiento de un cliente */
 
