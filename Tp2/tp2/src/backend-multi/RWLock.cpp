@@ -1,8 +1,7 @@
 #include "RWLock.h"
 
 RWLock :: RWLock()/* : rwlock()*/{
-	pthread_mutex_init(&mutreading, NULL);
-	pthread_mutex_init(&mutwriting, NULL);
+	pthread_mutex_init(&mut, NULL);
 	pthread_cond_init(&cond, NULL);	
 	pthread_mutex_init(&hayWrites, NULL);				//Evite inanicion y controla interaccion entre writes (lo toma un write y todos se encolan detras de el)
 	writing = 0;
@@ -15,16 +14,14 @@ void RWLock :: rlock() {
 	pthread_mutex_lock(&hayWrites);
 	pthread_mutex_unlock(&hayWrites);
 
-	pthread_mutex_lock(&mutwriting);
+	pthread_mutex_lock(&mut);
 	
 	while(writing != 0){		
-		pthread_cond_wait(&cond, &mutwriting);
+		pthread_cond_wait(&cond, &mut);
 	}
-	pthread_mutex_unlock(&mutwriting);
 
-	pthread_mutex_lock(&mutreading);
 	reading++;
-	pthread_mutex_unlock(&mutreading);
+	pthread_mutex_unlock(&mut);
 
 }
 
@@ -32,23 +29,21 @@ void RWLock :: wlock() {
 
 	pthread_mutex_lock(&hayWrites);	
 
-	pthread_mutex_lock(&mutreading);
+	pthread_mutex_lock(&mut);
 	
 	while(reading > 0){
-		pthread_cond_wait(&cond, &mutreading);
+		pthread_cond_wait(&cond, &mut);
 	}
 
-	pthread_mutex_lock(&mutwriting);
 	writing++;
-	pthread_mutex_unlock(&mutwriting);
 
 }
 
 void RWLock :: runlock() {
 
-	pthread_mutex_lock(&mutreading);
+	pthread_mutex_lock(&mut);
 	reading--;
-	pthread_mutex_unlock(&mutreading);
+	pthread_mutex_unlock(&mut);
 	
 	pthread_cond_signal(&cond);
 
@@ -56,11 +51,10 @@ void RWLock :: runlock() {
 
 void RWLock :: wunlock() {
 
-	pthread_mutex_unlock(&hayWrites);
-
-	pthread_mutex_lock(&mutwriting);
 	writing--;	
-	pthread_mutex_unlock(&mutwriting);
+	pthread_mutex_unlock(&mut);
+
+	pthread_mutex_unlock(&hayWrites);
 	
 	pthread_cond_broadcast(&cond);
 
